@@ -1,0 +1,15 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\unitml]
+@="URL:UniTML Protocol"
+"URL Protocol"=""
+
+[HKEY_CLASSES_ROOT\unitml\DefaultIcon]
+@="C:\\path\\to\\unitml.exe,0"
+
+[HKEY_CLASSES_ROOT\unitml\shell]
+
+[HKEY_CLASSES_ROOT\unitml\shell\open]
+
+[HKEY_CLASSES_ROOT\unitml\shell\open\command]
+@="\"C:\\path\\to\\unitml.exe\" \"%1\""

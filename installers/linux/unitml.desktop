@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Made with UniTML
+Comment=Cross-platform application
+Exec=/path/to/unitml %u
+Icon=unitml
+Terminal=false
+Categories=Utility;Development;
+MimeType=x-scheme-handler/unitml;
+StartupNotify=true
