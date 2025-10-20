@@ -17,8 +17,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Setup Node (non-Windows)
-      if: runner.os != 'Windows'
+    - name: Setup Node
       uses: actions/setup-node@v4
       with:
         node-version: '20'
@@ -36,7 +35,7 @@ jobs:
           libcurl4-openssl-dev
     
     - name: Cache CMake build
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: build
         key: ${{ runner.os }}-cmake-${{ hashFiles('**/CMakeLists.txt') }}
@@ -122,7 +121,7 @@ jobs:
       run: |
         echo '<html><head><title>Test</title></head><body><h1>Frontend Test</h1></body></html>' > test-app/frontend/index.html
     
-    - name: Smoke test - health check
+    - name: Smoke test - health check (Unix)
       if: runner.os != 'Windows'
       timeout-minutes: 2
       run: |
@@ -132,6 +131,26 @@ jobs:
         sleep 5
         curl -f http://127.0.0.1:5173/health || (kill $BACKEND_PID; exit 1)
         kill $BACKEND_PID
+
+    - name: Smoke test - health check (Windows)
+      if: runner.os == 'Windows'
+      shell: pwsh
+      timeout-minutes: 2
+      run: |
+        Set-Location test-app
+        $proc = Start-Process node -ArgumentList 'backend/server.js' -PassThru
+        try {
+          Start-Sleep -Seconds 5
+          $response = Invoke-WebRequest -Uri 'http://127.0.0.1:5173/health' -UseBasicParsing
+          if ($response.StatusCode -ne 200) {
+            throw "Unexpected status code: $($response.StatusCode)"
+          }
+        } finally {
+          if ($proc -and -not $proc.HasExited) {
+            $proc.Kill()
+            $proc.WaitForExit()
+          }
+        }
     
     - name: Package Windows
       if: runner.os == 'Windows'
