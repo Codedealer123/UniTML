@@ -20,6 +20,12 @@ set(SOURCES
     src/discovery.c
 )
 
+# --- ADD WEBVIEW.CC HERE ---
+# Treat webview.cc as C++
+set_source_files_properties(third_party/webview.cc PROPERTIES LANGUAGE CXX)
+# Add it to the executable
+list(APPEND SOURCES third_party/webview.cc)
+
 if(WIN32)
     add_executable(unitml WIN32 ${SOURCES})
     target_link_libraries(unitml PRIVATE user32 ole32 shell32 gdi32 advapi32 ws2_32 winhttp)
@@ -33,6 +39,10 @@ if(WIN32)
     
 elseif(APPLE)
     add_executable(unitml MACOSX_BUNDLE ${SOURCES})
+    
+    # Link C++ standard library for webview.cc
+    target_link_libraries(unitml PRIVATE stdc++)
+
     find_library(COCOA_LIBRARY Cocoa REQUIRED)
     find_library(WEBKIT_LIBRARY WebKit REQUIRED)
     target_link_libraries(unitml PRIVATE ${COCOA_LIBRARY} ${WEBKIT_LIBRARY} curl)
@@ -47,8 +57,10 @@ elseif(APPLE)
 elseif(UNIX)
     add_executable(unitml ${SOURCES})
     
+    # Link C++ standard library for webview.cc
+    target_link_libraries(unitml PRIVATE stdc++)
+
     find_package(PkgConfig REQUIRED)
-    # Try WebKitGTK 4.0 first (Ubuntu 22.04, Debian 12), then 4.1 (Ubuntu 24.04+)
     pkg_check_modules(WEBKIT2 webkit2gtk-4.0)
     if(NOT WEBKIT2_FOUND)
         pkg_check_modules(WEBKIT2 webkit2gtk-4.1)
