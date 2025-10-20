@@ -47,10 +47,18 @@ jobs:
     - name: Build
       run: cmake --build build --config Release
     
-    - name: Setup test environment
+    - name: Setup test environment (Unix)
+      if: runner.os != 'Windows'
       run: |
         mkdir -p test-app/backend
         mkdir -p test-app/frontend
+
+    - name: Setup test environment (Windows)
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: |
+        New-Item -ItemType Directory -Path test-app/backend -Force | Out-Null
+        New-Item -ItemType Directory -Path test-app/frontend -Force | Out-Null
     
     - name: Create test backend (Unix)
       if: runner.os != 'Windows'
@@ -130,9 +138,8 @@ jobs:
       shell: pwsh
       run: ./scripts/package_win.ps1
     
-    # macOS packaging script is incomplete; disable to keep CI green
-    - name: Package macOS (disabled)
-      if: runner.os == 'macOS' && false
+    - name: Package macOS
+      if: runner.os == 'macOS'
       run: |
         chmod +x scripts/package_mac.sh
         ./scripts/package_mac.sh
@@ -150,8 +157,8 @@ jobs:
         name: unitml-win-x64
         path: unitml-win-x64.zip
     
-    - name: Upload macOS artifact (skipped)
-      if: runner.os == 'macOS' && false
+    - name: Upload macOS artifact
+      if: runner.os == 'macOS'
       uses: actions/upload-artifact@v4
       with:
         name: unitml-macos
