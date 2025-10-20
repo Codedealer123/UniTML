@@ -26,13 +26,9 @@ jobs:
       if: runner.os == 'Linux'
       run: |
         sudo apt update
-        sudo apt install -y \
-          build-essential \
-          cmake \
-          ninja-build \
-          pkg-config \
-          libwebkit2gtk-4.0-dev \
-          libcurl4-openssl-dev
+        sudo apt install -y build-essential cmake ninja-build pkg-config libcurl4-openssl-dev
+        # Try 4.0 dev first (Jammy/Debian), then 4.1 dev (Noble)
+        sudo apt install -y libwebkit2gtk-4.0-dev || sudo apt install -y libwebkit2gtk-4.1-dev
     
     - name: Clean build directory
       run: cmake -E remove_directory build

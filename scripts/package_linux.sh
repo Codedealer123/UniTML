@@ -17,11 +17,15 @@ cp README.md "$OUT_DIR/"
 
 cat > "$OUT_DIR/DEPENDENCIES.txt" << 'EOF'
 Runtime Dependencies:
-- webkit2gtk-4.0
+- WebKitGTK (webkit2gtk) runtime
 - libcurl
 
-Install on Debian/Ubuntu:
+Install on Ubuntu/Debian:
+  # Ubuntu 22.04 / Debian 12 (4.0 slot)
   sudo apt install libwebkit2gtk-4.0-37 libcurl4
+
+  # Ubuntu 24.04 (4.1 slot)
+  sudo apt install libwebkit2gtk-4.1-0 libcurl4
 
 Install on Fedora:
   sudo dnf install webkit2gtk3 libcurl
